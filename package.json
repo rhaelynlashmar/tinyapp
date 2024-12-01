@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/rhaelynlashmar/tinyapp/issues"
   },
-  "homepage": "https://github.com/rhaelynlashmar/tinyapp#readme"
+  "homepage": "https://github.com/rhaelynlashmar/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
 }
