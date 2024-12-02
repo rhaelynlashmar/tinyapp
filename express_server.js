@@ -41,13 +41,13 @@ const generateRandomId = () => Math.random().toString(36).substring(2, 8);
 app.post('/urls', (req, res) => {
   const id = generateRandomId(); 
   const longURL = req.body.longURL; // Extract the longURL from the form data
-  urlDatabase[id] = longURL; // Save to the database
 
   if (!longURL) {
     res.status(404).send("404: URL not found.");
     return;
   }
-
+  
+  urlDatabase[id] = longURL; // Save to the database
   res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL 
 });
 
