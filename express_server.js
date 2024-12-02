@@ -66,3 +66,13 @@ app.get("/u/:id", (req, res) => {
   res.redirect(longURL);
 });
 
+// Deleting an URL from the URLs page
+app.post('/urls/:id/delete', (req, res) => {
+  const id = req.params.id;
+
+  // Use the delete button to remove the id from the database
+  delete urlDatabase[id];
+
+  // Redirect back to the URLs page
+  res.redirect('/urls');
+});
