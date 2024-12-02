@@ -42,9 +42,12 @@ app.post('/urls', (req, res) => {
   const id = generateRandomId(); 
   const longURL = req.body.longURL; // Extract the longURL from the form data
   urlDatabase[id] = longURL; // Save to the database
-    
-  console.log('URL added:', id, longURL); 
-    
+
+  if (!longURL) {
+    res.status(404).send("404: URL not found.");
+    return;
+  }
+
   res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL 
 });
 
@@ -61,4 +64,3 @@ app.get("/u/:id", (req, res) => {
   res.redirect(longURL);
 });
 
-res.redirect(301, longURL);
