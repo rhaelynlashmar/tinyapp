@@ -39,16 +39,26 @@ const generateRandomId = () => Math.random().toString(36).substring(2, 8);
 
 // Handle POST request to /urls
 app.post('/urls', (req, res) => {
-    const id = generateRandomId(); 
-    const longURL = req.body.longURL; // Extract the longURL from the form data
-    urlDatabase[id] = longURL; // Save to the database
+  const id = generateRandomId(); 
+  const longURL = req.body.longURL; // Extract the longURL from the form data
+  urlDatabase[id] = longURL; // Save to the database
     
-    console.log('URL added:', id, longURL); 
+  console.log('URL added:', id, longURL); 
     
-    res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL 
+  res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL 
 });
 
 app.get("/u/:id", (req, res) => {
-  // const longURL = ...
+  const id = req.params.id; // Extract the id from the URL
+  const longURL = urlDatabase[id];  
+
+  if (!longURL) {
+    // If the id is not in the database, send a 404 error
+    res.status(404).send("404: URL not found.");
+    return;
+  }
+
   res.redirect(longURL);
 });
+
+res.redirect(301, longURL);
