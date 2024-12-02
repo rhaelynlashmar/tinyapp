@@ -33,9 +33,22 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+
+// Helper function to generate a random ID
+const generateRandomId = () => Math.random().toString(36).substring(2, 8);
+
+// Handle POST request to /urls
+app.post('/urls', (req, res) => {
+    const id = generateRandomId(); 
+    const longURL = req.body.longURL; // Extract the longURL from the form data
+    urlDatabase[id] = longURL; // Save to the database
+    
+    console.log('URL added:', id, longURL); 
+    
+    res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL 
 });
 
-function generateRandomString() {}
+app.get("/u/:id", (req, res) => {
+  // const longURL = ...
+  res.redirect(longURL);
+});
