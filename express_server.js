@@ -42,11 +42,12 @@ app.post('/urls', (req, res) => {
   const id = generateRandomId(); 
   const longURL = req.body.longURL; // Extract the longURL from the form data
 
+  // If not a valid URL sends error message 
   if (!longURL) {
     res.status(404).send("404: URL not found.");
     return;
   }
-  
+
   urlDatabase[id] = longURL; // Save to the database
   res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL 
 });
@@ -61,6 +62,7 @@ app.get("/u/:id", (req, res) => {
     return;
   }
 
+  //redirect to website directly
   res.redirect(longURL);
 });
 
