@@ -76,3 +76,12 @@ app.post('/urls/:id/delete', (req, res) => {
   // Redirect back to the URLs page
   res.redirect('/urls');
 });
+
+// Editing an existing longURL
+app.post('/urls/:id', (req, res) => {
+  const id = req.params.id;
+  const newLongURL = req.body.longURL;
+  urlDatabase[id] = newLongURL; //Update the URL in the database
+
+  res.redirect('/urls');
+});
