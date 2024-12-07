@@ -11,10 +11,6 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
-
 // Parses data to make body readable
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,6 +39,11 @@ app.get("/urls/:id", (req, res) => {
     username: req.cookies["username"],
   };
   res.render("urls_show", templateVars);
+});
+
+// Registration page
+app.get('/register', (req, res) => {
+  res.render('register'); // Render the register template
 });
 
 
@@ -111,8 +112,13 @@ app.post('/login', (req, res) => {
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
 
+
 // Handle POST request to /logout
 app.post('/logout', (req, res) => {
   res.clearCookie('username'); // Clear the username cookie
   res.redirect('/urls'); // Redirect the user to /urls
+});
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
 });
