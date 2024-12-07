@@ -116,6 +116,15 @@ app.post('/urls/:id', (req, res) => {
   res.redirect('/urls');
 });
 
+const findUserByEmail = (email) => {
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return users[userId];
+    }
+  }
+  return null;
+};
+
 // Handle POST request to /login
 app.post('/login', (req, res) => {
   const { email, password } = req.body; // Extract the email & password from the login form data
@@ -130,15 +139,7 @@ app.post('/login', (req, res) => {
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
 
-const findUserByEmail = (email) => {
-  for (const userId in users) {
-    if (users[userId].email === email) {
-      return users[userId];
-    }
-  }
-  return null;
-};
-
+// Handle POST request to /register 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
 
@@ -171,7 +172,7 @@ app.post('/register', (req, res) => {
 
 // Handle POST request to /logout
 app.post('/logout', (req, res) => {
-  res.clearCookie('username'); // Clear the username cookie
+  res.clearCookie('user_id'); // Clear the username cookie
   res.redirect('/urls'); // Redirect the user to /urls
 });
 
