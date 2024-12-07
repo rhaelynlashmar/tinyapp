@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/urls", (req, res) => {
   const templateVars = { 
     urls: urlDatabase,
-    username:req.cookies["user_id"], //fetch username from cookies
+    username:req.cookies["user_id"], //fetch user_id from cookies
    };
   res.render("urls_index", templateVars);
 });
@@ -118,25 +118,43 @@ app.post('/urls/:id', (req, res) => {
 
 // Handle POST request to /login
 app.post('/login', (req, res) => {
-  const { username } = req.body; // Extract the username from the login form data
+  const { email, password } = req.body; // Extract the email & password from the login form data
+  const user = findUserByEmail(email); // Find the user by email
   
-  if (!username) {
-    res.status(400).send("400: Username is required.");
+  if (!username || user.password !== password) {
+    res.status(403).send("403: Either email or password is incorrect.");
     return;
   }
 
-  res.cookie('username', username); // Set a cookie named 'username' with the submitted value
+  res.cookie('user_id', user.id); // Set a cookie named 'username' with the submitted value
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
+
+const findUserByEmail = (email) => {
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return users[userId];
+    }
+  }
+  return null;
+};
 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
 
+  // If email or password is missing, send a 400 error
   if (!email || !password) {
     res.status(400).send("400: Email and Password are required.");
     return;
   }
 
+  // If the email is already registered, send a 400 error
+  if (findUserByEmail(email)) {
+    res.status(400).send("400: Email already Registered.");
+    return;
+  }
+
+  // Create a new user
   const id = generateRandomId();
   const newUser = {
     id,
