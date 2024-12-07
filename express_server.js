@@ -6,6 +6,19 @@ const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 app.use(cookieParser());
 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
+
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -23,7 +36,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-//Adds a page with a submission form to make a new shortened URL from a longUrl
+// Page with a submission form to make a new shortened URL from a longUrl
 app.get("/urls/new", (req, res) => {
   const templateVars = {
     username: req.cookies["username"] 
@@ -31,7 +44,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-// Adds an URLs page with the ids of all shortened URLs and their respective longURL
+// An URLs page with the ids of all shortened URLs and their respective longURL
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
@@ -111,6 +124,27 @@ app.post('/login', (req, res) => {
   res.cookie('username', username); // Set a cookie named 'username' with the submitted value
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
+
+app.post('/register', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send("400: Email and Password are required.");
+    return;
+  }
+
+  const id = generateRandomId();
+  const newUser = {
+    id,
+    email,
+    password,
+  };
+
+  users[id] = newUser;
+  
+  res.cookie('user_id', id); // Set a cookie containing the user's ID
+  res.redirect('/urls'); // Redirect to the /urls page
+}); 
 
 
 // Handle POST request to /logout
