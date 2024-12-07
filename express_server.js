@@ -58,7 +58,7 @@ app.get("/urls/:id", (req, res) => {
 });
 
 // Registration page
-pp.get('/register', (req, res) => {
+app.get('/register', (req, res) => {
   const user = users[req.cookies["user_id"]];
   const templateVars = {
     user: user,
