@@ -29,27 +29,30 @@ app.use(express.urlencoded({ extended: true }));
 
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
+  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
   const templateVars = { 
     urls: urlDatabase,
-    username:req.cookies["user_id"], //fetch user_id from cookies
+    user,
    };
   res.render("urls_index", templateVars);
 });
 
 // Page with a submission form to make a new shortened URL from a longUrl
 app.get("/urls/new", (req, res) => {
+  const user = users[req.cookies["user_id"]];
   const templateVars = {
-    username: req.cookies["user_id"] 
+    user,
   };
   res.render("urls_new", templateVars);
 });
 
 // An URLs page with the ids of all shortened URLs and their respective longURL
 app.get("/urls/:id", (req, res) => {
+  const user = users[req.cookies["user_id"]];
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: req.cookies["user_id"],
+    user,
   };
   res.render("urls_show", templateVars);
 });
@@ -63,8 +66,7 @@ pp.get('/register', (req, res) => {
   res.render('register', templateVars); // render the register template
 });
 
-
-// Helper function to generate a random ID
+// Function to generate a random ID
 const generateRandomId = () => Math.random().toString(36).substring(2, 8);
 
 // Handle POST request to /urls
