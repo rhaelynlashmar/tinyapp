@@ -52,14 +52,31 @@ const findUserByEmail = (email) => {
 };
 
 
+// Function to filter URLs by user ID
+const urlsForUser = (id) => {
+  const userUrls = {};
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      userUrls[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return userUrls;
+};
+
+
 
 
 
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  if (!user) { // If the user is not logged in, send a 403 error
+    res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to view URLs.<h1>`);
+    return;
+  }
+  const userUrls = urlsForUser(user.id); // Filter the URLs by user ID
   const templateVars = {
-    urls: urlDatabase, // Pass the URL database to the template
+    urls: userUrls, // Pass the filtered URL database to the template
     user,
   };
   res.render("urls_index", templateVars);
@@ -82,8 +99,16 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const user = users[req.cookies["user_id"]];
   const url = urlDatabase[req.params.id]; // Get the URL from the database
-  if (!url) {
+  if (!user) {
+    res.status(403).send(`<h1>403: You must be logged in to view URLs.<h1>`);
+    return;
+  }
+  if (!url) { // If the URL is not in the database, send a 404 error
     res.status(404).send("404: URL not found.");
+    return;
+  }
+  if (url.userID !== user.id) { // If the user is not the owner, send a 403 error
+    res.status(403).send(`<h1>403: You must be the owner to view URLs.<h1>`);
     return;
   }
   const templateVars = {
