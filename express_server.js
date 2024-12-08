@@ -82,6 +82,10 @@ app.get("/urls/:id", (req, res) => {
 // Registration page
 app.get('/register', (req, res) => {
   const user = users[req.cookies["user_id"]];
+  if (user) {
+    res.redirect('/urls');
+    return;
+  }
   const templateVars = {
     user,
   };
@@ -90,6 +94,10 @@ app.get('/register', (req, res) => {
 
 app.get('/login', (req, res) => {
   const user = users[req.cookies["user_id"]];
+  if (user) {
+    res.redirect('/urls');
+    return;
+  }
   const templateVars = {
     user,
   };
