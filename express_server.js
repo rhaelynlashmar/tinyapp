@@ -3,9 +3,15 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const PORT = 8080; // default port 8080
 
+
+
 app.set("view engine", "ejs");
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true })); // Parses data to make body readable
 
+
+
+// Database of users and URLs 
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -24,10 +30,20 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
-// Parses data to make body readable
-app.use(express.urlencoded({ extended: true }));
 
 
+// Function to generate a random ID
+const generateRandomId = () => Math.random().toString(36).substring(2, 8);
+
+// Function to find a user by email
+const findUserByEmail = (email) => {
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return users[userId];
+    }
+  }
+  return null;
+};
 
 
 
@@ -67,23 +83,22 @@ app.get("/urls/:id", (req, res) => {
 app.get('/register', (req, res) => {
   const user = users[req.cookies["user_id"]];
   const templateVars = {
-    user: user,
+    user,
   };
   res.render('register', templateVars); // render the register template
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  const user = users[req.cookies["user_id"]];
+  const templateVars = {
+    user,
+  };
+  res.render('login', templateVars); // render the login template
 });
 
 
 
 
-
-
-
-// Function to generate a random ID
-const generateRandomId = () => Math.random().toString(36).substring(2, 8);
 
 // Handle POST request to /urls
 app.post('/urls', (req, res) => {
@@ -134,15 +149,6 @@ app.post('/urls/:id', (req, res) => {
   res.redirect('/urls');
 });
 
-const findUserByEmail = (email) => {
-  for (const userId in users) {
-    if (users[userId].email === email) {
-      return users[userId];
-    }
-  }
-  return null;
-};
-
 // Handle POST request to /login
 app.post('/login', (req, res) => {
   const { email, password } = req.body; // Extract the email & password from the login form data
@@ -153,7 +159,7 @@ app.post('/login', (req, res) => {
     return;
   }
 
-  res.cookie('user_id', user.id); // Set a cookie named 'username' with the submitted value
+  res.cookie('user_id', user.id); // Set a cookie named 'user_id' with the submitted value
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
 
@@ -187,12 +193,15 @@ app.post('/register', (req, res) => {
   res.redirect('/urls'); // Redirect to the /urls page
 }); 
 
-
 // Handle POST request to /logout
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id'); // Clear the username cookie
-  res.redirect('/urls'); // Redirect the user to /urls
+  res.clearCookie('user_id'); // Clear the user_id cookie
+  res.redirect('/login'); // Redirect the user to /urls
 });
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
