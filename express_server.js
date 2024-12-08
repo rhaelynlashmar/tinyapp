@@ -26,8 +26,14 @@ const users = {
 };
 
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 };
 
 
@@ -53,7 +59,8 @@ const findUserByEmail = (email) => {
 app.get("/urls", (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
   const templateVars = {
-    urls: urlDatabase,
+    id: req.params.id,
+    longURL: urlDatabase[req.params.id].longURL,
     user,
   };
   res.render("urls_index", templateVars);
@@ -128,13 +135,13 @@ app.post('/urls', (req, res) => {
     return;
   }
 
-  urlDatabase[id] = longURL; // Save to the database
+  urlDatabase[id].longUrl = longURL; // Save to the database
   res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL
 });
 
 app.get("/u/:id", (req, res) => {
   const id = req.params.id; // Extract the id from the URL
-  const longURL = urlDatabase[id];
+  const longURL = urlDatabase[id].longUrl;
 
   if (!longURL) {
     // If the id is not in the database, send a 404 error
@@ -166,7 +173,7 @@ app.post('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
 
   // Use the delete button to remove the id from the database
-  delete urlDatabase[id];
+  delete urlDatabase[id].longUrl;
 
   // Redirect back to the URLs page
   res.redirect('/urls');
@@ -182,7 +189,7 @@ app.post('/urls/:id', (req, res) => {
 
   const id = req.params.id;
   const newLongURL = req.body.longURL;
-  urlDatabase[id] = newLongURL; // Update the URL in the database
+  urlDatabase[id].longUrl = newLongURL; // Update the URL in the database
 
   res.redirect('/urls');
 });
