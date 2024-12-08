@@ -8,11 +8,11 @@
 </head>
 <body>
   <header>
-    <%- include('_header') %>
+    <%- include('partials/_header') %>
   </header>
   <main class="container">
     <h1>Login</h1>
-    <form method="POST" action="/login">
+    <form action="/login" method="POST">
       <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" class="form-control" required>
