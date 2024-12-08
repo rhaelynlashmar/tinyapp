@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const PORT = 8080; // default port 8080
 
 
-
+// Middleware set up
 app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true })); // Parses data to make body readable
