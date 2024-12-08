@@ -16,7 +16,7 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur",
+    password: "pmd",
   },
   user2RandomID: {
     id: "user2RandomID",
@@ -59,8 +59,7 @@ const findUserByEmail = (email) => {
 app.get("/urls", (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
   const templateVars = {
-    id: req.params.id,
-    longURL: urlDatabase[req.params.id].longURL,
+    urls: urlDatabase, // Pass the URL database to the template
     user,
   };
   res.render("urls_index", templateVars);
@@ -82,9 +81,14 @@ app.get("/urls/new", (req, res) => {
 // An URLs page with the ids of all shortened URLs and their respective longURL
 app.get("/urls/:id", (req, res) => {
   const user = users[req.cookies["user_id"]];
+  const url = urlDatabase[req.params.id]; // Get the URL from the database
+  if (!url) {
+    res.status(404).send("404: URL not found.");
+    return;
+  }
   const templateVars = {
     id: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    longURL: url.longURL, // Get the longURL from the database
     user,
   };
   res.render("urls_show", templateVars);
@@ -135,15 +139,15 @@ app.post('/urls', (req, res) => {
     return;
   }
 
-  urlDatabase[id].longUrl = longURL; // Save to the database
+  urlDatabase[id]= { longURL, userID: user.id }; // Save to the database
   res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL
 });
 
 app.get("/u/:id", (req, res) => {
   const id = req.params.id; // Extract the id from the URL
-  const longURL = urlDatabase[id].longUrl;
+  const url = urlDatabase[id]; // Get the longURL from the database
 
-  if (!longURL) {
+  if (!url) {
     // If the id is not in the database, send a 404 error
     res.status(404).send(`
       <html>
@@ -159,7 +163,7 @@ app.get("/u/:id", (req, res) => {
     return;
   }
   //redirect to website directly
-  res.redirect(longURL);
+  res.redirect(url.longURL);
 });
 
 // Deleting an URL from the URLs page
@@ -173,7 +177,7 @@ app.post('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
 
   // Use the delete button to remove the id from the database
-  delete urlDatabase[id].longUrl;
+  delete urlDatabase[id]; 
 
   // Redirect back to the URLs page
   res.redirect('/urls');
@@ -189,7 +193,14 @@ app.post('/urls/:id', (req, res) => {
 
   const id = req.params.id;
   const newLongURL = req.body.longURL;
-  urlDatabase[id].longUrl = newLongURL; // Update the URL in the database
+
+  // check if the id is in the database
+  if (!urlDatabase[id]) {
+    res.status(404).send("404: URL not found.");
+    return;
+  }
+
+  urlDatabase[id].longURL = newLongURL; // Update the URL in the database
 
   res.redirect('/urls');
 });
