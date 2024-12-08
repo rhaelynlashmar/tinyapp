@@ -72,6 +72,10 @@ app.get('/register', (req, res) => {
   res.render('register', templateVars); // render the register template
 });
 
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
 
 
 
@@ -155,7 +159,7 @@ app.post('/login', (req, res) => {
 
 // Handle POST request to /register 
 app.post('/register', (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body; 
 
   // If email or password is missing, send a 400 error
   if (!email || !password) {
