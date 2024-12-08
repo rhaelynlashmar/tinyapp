@@ -104,7 +104,7 @@ app.get("/urls/:id", (req, res) => {
     return;
   }
   if (!url) { // If the URL is not in the database, send a 404 error
-    res.status(404).send("404: URL not found.");
+    res.status(404).send(`<h1>404: URL not found.<h1>`);
     return;
   }
   if (url.userID !== user.id) { // If the user is not the owner, send a 403 error
@@ -160,7 +160,7 @@ app.post('/urls', (req, res) => {
 
   // If not a valid URL sends error message
   if (!longURL) {
-    res.status(404).send("404: URL not found.");
+    res.status(404).send(`<h1>404: URL not found.<h1>`);
     return;
   }
 
@@ -221,7 +221,7 @@ app.post('/urls/:id', (req, res) => {
 
   // check if the id is in the database
   if (!urlDatabase[id]) {
-    res.status(404).send("404: URL not found.");
+    res.status(404).send(`<h1>404: URL not found.</h1>`);
     return;
   }
 
@@ -236,7 +236,7 @@ app.post('/login', (req, res) => {
   const user = findUserByEmail(email); // Find the user by email
   
   if (!user || user.password !== password) {
-    res.status(403).send("403: Either email or password is incorrect.");
+    res.status(403).send(`<h1>403: Email or Password is incorrect.</h1>`);
     return;
   }
 
@@ -250,13 +250,13 @@ app.post('/register', (req, res) => {
 
   // If email or password is missing, send a 400 error
   if (!email || !password) {
-    res.status(400).send("400: Email and Password are required.");
+    res.status(400).send(`<h1>400: Email or Password is missing.</h1>`);
     return;
   }
 
   // If the email is already registered, send a 400 error
   if (findUserByEmail(email)) {
-    res.status(400).send("400: Email already Registered.");
+    res.status(400).send(`<h1>400: Email already exists.</h1>`);
     return;
   }
 
