@@ -71,7 +71,7 @@ const urlsForUser = (id) => {
 app.get("/urls", (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
   if (!user) { // If the user is not logged in, send a 403 error
-    res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to view URLs.<h1>`);
+    res.status(403).send(`<h1>403: You must be logged in to view URLs.<h1>`);
     return;
   }
   const userUrls = urlsForUser(user.id); // Filter the URLs by user ID
@@ -194,12 +194,21 @@ app.get("/u/:id", (req, res) => {
 // Deleting an URL from the URLs page
 app.post('/urls/:id/delete', (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
-  if (!user) {
-    res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to delete URLs.<h1>`);
+  const id = req.params.id;
+
+  if (!user) { // If the user is not logged in, send a 403 error
+    res.status(403).send(`<h1>403: You must be logged in to delete URLs.<h1>`);
+    return;
+  }
+  if (!urlDatabase[id]) { // If the id is not in the database, send a 404 error 
+    res.status(404).send(`<h1>404: URL not found.<h1>`);
+    return;
+  }
+  if (urlDatabase[id].userID !== user.id) { // If the user is not the owner, send a 403 error
+    res.status(403).send(`<h1>403: You must be the owner to delete URLs.<h1>`);
     return;
   }
 
-  const id = req.params.id;
 
   // Use the delete button to remove the id from the database
   delete urlDatabase[id]; 
@@ -211,17 +220,21 @@ app.post('/urls/:id/delete', (req, res) => {
 // Editing an existing longURL
 app.post('/urls/:id', (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  const id = req.params.id;
+  const newLongURL = req.body.longURL;
+
   if (!user) {
     res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to edit URLs.</h1>`);
     return; 
   }
-
-  const id = req.params.id;
-  const newLongURL = req.body.longURL;
-
   // check if the id is in the database
   if (!urlDatabase[id]) {
     res.status(404).send(`<h1>404: URL not found.</h1>`);
+    return;
+  }
+  // check if the user is the owner of the URL
+  if (urlDatabase[id].userID !== user.id) {
+    res.status(403).send(`<h1>403: You must be the owner to edit URLs.</h1>`);
     return;
   }
 
