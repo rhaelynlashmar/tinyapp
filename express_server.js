@@ -157,6 +157,12 @@ app.get("/u/:id", (req, res) => {
 
 // Deleting an URL from the URLs page
 app.post('/urls/:id/delete', (req, res) => {
+  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  if (!user) {
+    res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to delete URLs.<h1>`);
+    return;
+  }
+
   const id = req.params.id;
 
   // Use the delete button to remove the id from the database
@@ -168,9 +174,15 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // Editing an existing longURL
 app.post('/urls/:id', (req, res) => {
+  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  if (!user) {
+    res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to edit URLs.</h1>`);
+    return; 
+  }
+
   const id = req.params.id;
   const newLongURL = req.body.longURL;
-  urlDatabase[id] = newLongURL; //Update the URL in the database
+  urlDatabase[id] = newLongURL; // Update the URL in the database
 
   res.redirect('/urls');
 });
