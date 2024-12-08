@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true })); // Parses data to make body rea
 
 
 
-// Database of users and URLs 
+// Database of users and URLs
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -52,10 +52,10 @@ const findUserByEmail = (email) => {
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
   const user = users[req.cookies["user_id"]]; // Get the user from the cookie
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     user,
-   };
+  };
   res.render("urls_index", templateVars);
 });
 
@@ -163,9 +163,9 @@ app.post('/login', (req, res) => {
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
 
-// Handle POST request to /register 
+// Handle POST request to /register
 app.post('/register', (req, res) => {
-  const { email, password } = req.body; 
+  const { email, password } = req.body;
 
   // If email or password is missing, send a 400 error
   if (!email || !password) {
@@ -191,7 +191,7 @@ app.post('/register', (req, res) => {
   
   res.cookie('user_id', id); // Set a cookie containing the user's ID
   res.redirect('/urls'); // Redirect to the /urls page
-}); 
+});
 
 // Handle POST request to /logout
 app.post('/logout', (req, res) => {
