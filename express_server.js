@@ -144,7 +144,7 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body; // Extract the email & password from the login form data
   const user = findUserByEmail(email); // Find the user by email
   
-  if (!email || email.password !== password) {
+  if (!user || user.password !== password) {
     res.status(403).send("403: Either email or password is incorrect.");
     return;
   }
