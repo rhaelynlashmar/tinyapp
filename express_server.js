@@ -62,6 +62,10 @@ app.get("/urls", (req, res) => {
 // Page with a submission form to make a new shortened URL from a longUrl
 app.get("/urls/new", (req, res) => {
   const user = users[req.cookies["user_id"]];
+  if (!user) {
+    res.redirect('/login');
+    return;
+  }
   const templateVars = {
     user,
   };
@@ -110,6 +114,11 @@ app.get('/login', (req, res) => {
 
 // Handle POST request to /urls
 app.post('/urls', (req, res) => {
+  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  if (!user) {
+    res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to shorten URLs.<h1>`);
+    return;
+  }
   const id = generateRandomId();
   const longURL = req.body.longURL; // Extract the longURL from the form data
 
@@ -129,10 +138,19 @@ app.get("/u/:id", (req, res) => {
 
   if (!longURL) {
     // If the id is not in the database, send a 404 error
-    res.status(404).send("404: URL not found.");
+    res.status(404).send(`
+      <html>
+        <head>
+          <title>404 URL Not Found</title>
+        </head>
+        <body>
+          <h1>404: URL not found.</h1>
+          <p>The URL you are looking for does not exist.</p>
+        </body>
+      </html>
+      `);
     return;
   }
-
   //redirect to website directly
   res.redirect(longURL);
 });
