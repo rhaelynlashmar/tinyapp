@@ -250,8 +250,8 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body; // Extract the email & password from the login form data
   const user = findUserByEmail(email); // Find the user by email
   
-  if (!user || user.password !== password) {
-    res.status(403).send(`<h1>403: Email or Password is incorrect.</h1>`);
+  if (!user || !bcrypt.compareSync(password, user.password)) { // Compare the password to the hashed password
+    res.status(400).send(`<h1>400: Email or Password is incorrect.</h1>`);
     return;
   }
 
