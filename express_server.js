@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const bcrypt = require('bcryptjs');
+const saltRounds = 10;
 const PORT = 8080; // default port 8080
 
 
@@ -274,12 +275,15 @@ app.post('/register', (req, res) => {
     return;
   }
 
+  // Hash the password
+  const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
   // Create a new user
   const id = generateRandomId();
   const newUser = {
     id,
     email,
-    password,
+    password: hashedPassword, // Save the hashed password
   };
 
   users[id] = newUser;
