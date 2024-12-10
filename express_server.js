@@ -262,7 +262,7 @@ app.post('/register', (req, res) => {
   }
 
   // If the email is already registered, send a 400 error
-  if (findUserByEmail(email)) {
+  if (findUserByEmail(email, users)) {
     res.status(400).send(`<h1>400: Email already exists.</h1>`);
     return;
   }
@@ -287,7 +287,7 @@ app.post('/register', (req, res) => {
 // Handle POST request to /login
 app.post('/login', (req, res) => {
   const { email, password } = req.body; // Extract the email & password from the login form data
-  const user = findUserByEmail(email); // Find the user by email
+  const user = findUserByEmail(email, users); // Find the user by email
   
   if (!user || !bcrypt.compareSync(password, user.password)) { // Compare the password to the hashed password
     res.status(400).send(`<h1>400: Email or Password is incorrect.</h1>`);
