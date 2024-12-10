@@ -11,9 +11,9 @@ const PORT = 8080; // default port 8080
 app.set("view engine", "ejs"); // Set the view engine to EJS
 app.use(cookieSession({
   name: 'session',
-  keys: ['secretKey', 'anotherSecretKey'], 
+  keys: ['secretKey', 'anotherSecretKey'],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
-})); 
+}));
 app.use(express.urlencoded({ extended: true })); // Parses data to make body readable
 
 
@@ -23,7 +23,7 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: bcrypt.hashSync("pmd", saltRounds), 
+    password: bcrypt.hashSync("pmd", saltRounds),
   },
   user2RandomID: {
     id: "user2RandomID",
@@ -143,7 +143,7 @@ app.post('/urls', (req, res) => {
     return;
   }
 
-  urlDatabase[id]= { longURL, userID: user.id }; // Save to the database
+  urlDatabase[id] = { longURL, userID: user.id }; // Save to the database
   res.redirect(`/urls/${id}`); // Redirect to a page showing the new URL
 });
 
@@ -179,7 +179,7 @@ app.post('/urls/:id/delete', (req, res) => {
     res.status(403).send(`<h1>403: You must be logged in to delete URLs.<h1>`);
     return;
   }
-  if (!urlDatabase[id]) { // If the id is not in the database, send a 404 error 
+  if (!urlDatabase[id]) { // If the id is not in the database, send a 404 error
     res.status(404).send(`<h1>404: URL not found.<h1>`);
     return;
   }
@@ -190,7 +190,7 @@ app.post('/urls/:id/delete', (req, res) => {
 
 
   // Use the delete button to remove the id from the database
-  delete urlDatabase[id]; 
+  delete urlDatabase[id];
 
   // Redirect back to the URLs page
   res.redirect('/urls');
@@ -204,7 +204,7 @@ app.post('/urls/:id', (req, res) => {
 
   if (!user) {
     res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to edit URLs.</h1>`);
-    return; 
+    return;
   }
   // check if the id is in the database
   if (!urlDatabase[id]) {
@@ -278,9 +278,7 @@ app.post('/logout', (req, res) => {
 });
 
 
-
-
-
+// Open the server on PORT
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

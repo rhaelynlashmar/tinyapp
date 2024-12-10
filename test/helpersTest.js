@@ -3,13 +3,13 @@ const { findUserByEmail, urlsForUser } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "[email protected]", 
+    id: "userRandomID",
+    email: "[email protected]",
     password: "pmd"
   },
   "user2RandomID": {
-    id: "user2RandomID", 
-    email: "[email protected]", 
+    id: "user2RandomID",
+    email: "[email protected]",
     password: "dishwasher-funk"
   }
 };
@@ -29,7 +29,7 @@ const urlDatabase = {
 // ---------Test cases for findUserByEmail---------
 describe('findUserByEmail', function() {
   it('should return a user with valid email', function() {
-    const user = findUserByEmail("[email protected]", testUsers)
+    const user = findUserByEmail("[email protected]", testUsers);
     const expectedUserID = "userRandomID";
     assert.strictEqual(user.id, expectedUserID);
   });
