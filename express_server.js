@@ -75,7 +75,7 @@ const urlsForUser = (id) => {
 
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
-  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  const user = users[req.session.user_id]; // Get the user from the session "cookie"
   if (!user) { // If the user is not logged in, send a 403 error
     res.status(403).send(`<h1>403: You must be logged in to view URLs.<h1>`);
     return;
@@ -90,7 +90,7 @@ app.get("/urls", (req, res) => {
 
 // Page with a submission form to make a new shortened URL from a longUrl
 app.get("/urls/new", (req, res) => {
-  const user = users[req.cookies["user_id"]];
+  const user = users[req.session.user_id]; // Get the user from the session "cookie"
   if (!user) {
     res.redirect('/login');
     return;
@@ -103,7 +103,7 @@ app.get("/urls/new", (req, res) => {
 
 // An URLs page with the ids of all shortened URLs and their respective longURL
 app.get("/urls/:id", (req, res) => {
-  const user = users[req.cookies["user_id"]];
+  const user = users[req.session.user_id];
   const url = urlDatabase[req.params.id]; // Get the URL from the database
   if (!user) {
     res.status(403).send(`<h1>403: You must be logged in to view URLs.<h1>`);
@@ -127,7 +127,7 @@ app.get("/urls/:id", (req, res) => {
 
 // Registration page
 app.get('/register', (req, res) => {
-  const user = users[req.cookies["user_id"]];
+  const user = users[req.session.user_id];
   if (user) {
     res.redirect('/urls');
     return;
@@ -139,7 +139,7 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  const user = users[req.cookies["user_id"]];
+  const user = users[req.session.user_id]; // Get the user from the session "cookie"
   if (user) {
     res.redirect('/urls');
     return;
@@ -156,7 +156,7 @@ app.get('/login', (req, res) => {
 
 // Handle POST request to /urls
 app.post('/urls', (req, res) => {
-  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  const user = users[req.session.user_id]; // Get the user from the cookie
   if (!user) {
     res.status(403).send(`<h1>403: Unauthorized access, You must be logged in to shorten URLs.<h1>`);
     return;
@@ -199,7 +199,7 @@ app.get("/u/:id", (req, res) => {
 
 // Deleting an URL from the URLs page
 app.post('/urls/:id/delete', (req, res) => {
-  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  const user = users[req.session.user_id]; // Get the user from the cookie
   const id = req.params.id;
 
   if (!user) { // If the user is not logged in, send a 403 error
@@ -225,7 +225,7 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // Editing an existing longURL
 app.post('/urls/:id', (req, res) => {
-  const user = users[req.cookies["user_id"]]; // Get the user from the cookie
+  const user = users[req.session.user_id];
   const id = req.params.id;
   const newLongURL = req.body.longURL;
 
@@ -280,7 +280,7 @@ app.post('/register', (req, res) => {
 
   users[id] = newUser;
   
-  res.cookie('user_id', id); // Set a cookie containing the user's ID
+  req.session.user_id = id; // Set the user_id cookie
   res.redirect('/urls'); // Redirect to the /urls page
 });
 
@@ -294,13 +294,13 @@ app.post('/login', (req, res) => {
     return;
   }
 
-  res.cookie('user_id', user.id); // Set a cookie named 'user_id' with the submitted value
+  req.session.user_id = user.id; // Set the user_id cookie
   res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
 
 // Handle POST request to /logout
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id'); // Clear the user_id cookie
+  req.session = null; // Clear the cookie
   res.redirect('/login'); // Redirect the user to /urls
 });
 
