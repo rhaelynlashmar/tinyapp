@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcryptjs');
+const { findUserByEmail, generateRandomId, urlsForUser } = require('./helpers');
 const saltRounds = 10;
 const PORT = 8080; // default port 8080
 
@@ -22,12 +23,12 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: "pmd",
+    password: bcrypt.hashSync("pmd", saltRounds), 
   },
   user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk",
+    password: bcrypt.hashSync("dishwasher-funk", saltRounds),
   },
 };
 
@@ -44,34 +45,6 @@ const urlDatabase = {
 
 
 
-// Function to generate a random ID
-const generateRandomId = () => Math.random().toString(36).substring(2, 8);
-
-// Function to find a user by email
-const findUserByEmail = (email, database) => {
-  for (const userId in users) {
-    if (users[userId].email === email) {
-      return database[userId];
-    }
-  }
-  return null;
-};
-
-
-// Function to filter URLs by user ID
-const urlsForUser = (id) => {
-  const userUrls = {};
-  for (const shortURL in urlDatabase) {
-    if (urlDatabase[shortURL].userID === id) {
-      userUrls[shortURL] = urlDatabase[shortURL];
-    }
-  }
-  return userUrls;
-};
-
-
-
-
 
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
@@ -80,7 +53,7 @@ app.get("/urls", (req, res) => {
     res.status(403).send(`<h1>403: You must be logged in to view URLs.<h1>`);
     return;
   }
-  const userUrls = urlsForUser(user.id); // Filter the URLs by user ID
+  const userUrls = urlsForUser(user.id, urlDatabase); // Filter the URLs by user ID
   const templateVars = {
     urls: userUrls, // Pass the filtered URL database to the template
     user,
