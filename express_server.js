@@ -7,7 +7,7 @@ const saltRounds = 10;
 const PORT = 8080; // default port 8080
 
 
-// Middleware set up
+// ----------Middleware set up----------
 app.set("view engine", "ejs"); // Set the view engine to EJS
 app.use(cookieSession({
   name: 'session',
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true })); // Parses data to make body rea
 
 
 
-// Database of users and URLs
+// ----------Databases of users and URLs----------
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -45,6 +45,7 @@ const urlDatabase = {
 
 
 
+// ----------Routes----------
 
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
@@ -126,6 +127,7 @@ app.get('/login', (req, res) => {
 
 
 
+// ----------POST requests----------
 
 // Handle POST request to /urls
 app.post('/urls', (req, res) => {
@@ -278,6 +280,7 @@ app.post('/logout', (req, res) => {
 });
 
 
+// ----------Server Startup----------
 // Open the server on PORT
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
