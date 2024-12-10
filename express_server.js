@@ -1,14 +1,18 @@
 const express = require("express");
 const app = express();
-const cookieParser = require("cookie-parser");
+const cookieSession = require("cookie-session");
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const PORT = 8080; // default port 8080
 
 
 // Middleware set up
-app.set("view engine", "ejs");
-app.use(cookieParser());
+app.set("view engine", "ejs"); // Set the view engine to EJS
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secretKey', 'anotherSecretKey'], 
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+})); 
 app.use(express.urlencoded({ extended: true })); // Parses data to make body readable
 
 
@@ -245,19 +249,7 @@ app.post('/urls/:id', (req, res) => {
   res.redirect('/urls');
 });
 
-// Handle POST request to /login
-app.post('/login', (req, res) => {
-  const { email, password } = req.body; // Extract the email & password from the login form data
-  const user = findUserByEmail(email); // Find the user by email
-  
-  if (!user || !bcrypt.compareSync(password, user.password)) { // Compare the password to the hashed password
-    res.status(400).send(`<h1>400: Email or Password is incorrect.</h1>`);
-    return;
-  }
 
-  res.cookie('user_id', user.id); // Set a cookie named 'user_id' with the submitted value
-  res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
-});
 
 // Handle POST request to /register
 app.post('/register', (req, res) => {
@@ -290,6 +282,20 @@ app.post('/register', (req, res) => {
   
   res.cookie('user_id', id); // Set a cookie containing the user's ID
   res.redirect('/urls'); // Redirect to the /urls page
+});
+
+// Handle POST request to /login
+app.post('/login', (req, res) => {
+  const { email, password } = req.body; // Extract the email & password from the login form data
+  const user = findUserByEmail(email); // Find the user by email
+  
+  if (!user || !bcrypt.compareSync(password, user.password)) { // Compare the password to the hashed password
+    res.status(400).send(`<h1>400: Email or Password is incorrect.</h1>`);
+    return;
+  }
+
+  res.cookie('user_id', user.id); // Set a cookie named 'user_id' with the submitted value
+  res.redirect('/urls'); // Redirect to the /urls page after setting the cookie
 });
 
 // Handle POST request to /logout
