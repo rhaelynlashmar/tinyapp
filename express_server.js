@@ -48,10 +48,10 @@ const urlDatabase = {
 const generateRandomId = () => Math.random().toString(36).substring(2, 8);
 
 // Function to find a user by email
-const findUserByEmail = (email) => {
+const findUserByEmail = (email, database) => {
   for (const userId in users) {
     if (users[userId].email === email) {
-      return users[userId];
+      return database[userId];
     }
   }
   return null;
