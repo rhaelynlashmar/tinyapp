@@ -20,7 +20,12 @@ app.use(express.urlencoded({ extended: true })); // Parses data to make body rea
 
 
 
-// ----------Routes----------
+// ---------- GET Routes----------
+
+app.get('/', (req, res) => {
+  const user = req.session.user || null; // Get the user from the cookie
+  res.render('homepage', { user });
+});
 
 // Adds a table template for URL data
 app.get("/urls", (req, res) => {
