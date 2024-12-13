@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to TinyURL</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <%- include('partials/_header') %>
+  </header>
+  <div class="container text-center mt-5">
+    <h1>Welcome to TinyURL</h1>
+    <p class="lead">TinyURL is a simple and efficient URL shortening service. Create shorter links that redirect to your long URLs.</p>
+    <img src="https://media.giphy.com/media/hGRRIb9cvkalMfQICt/giphy.gif?cid=790b7611c3aqhjhefg8m6mcehu0p4771zekab2qvpm8yvroi&ep=v1_stickers_search&rid=giphy.gif&ct=s" alt="Fun GIF" class="img-fluid my-4">
+    <div class="mt-4">
+      <a href="/login" class="btn btn-primary mx-2">Login</a>
+      <a href="/register" class="btn btn-secondary mx-2">Register</a>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
