@@ -3,6 +3,7 @@ const app = express();
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcryptjs');
 const { findUserByEmail, generateRandomId, urlsForUser } = require('./helpers');
+const { users, urlDatabase } = require('./databases');
 const saltRounds = 10;
 const PORT = 8080; // default port 8080
 
@@ -16,32 +17,6 @@ app.use(cookieSession({
 }));
 app.use(express.urlencoded({ extended: true })); // Parses data to make body readable
 
-
-
-// ----------Databases of users and URLs----------
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: bcrypt.hashSync("pmd", saltRounds),
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: bcrypt.hashSync("dishwasher-funk", saltRounds),
-  },
-};
-
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "userRandomID",
-  },
-  i3BoGr: {
-    longURL: "https://www.google.ca",
-    userID: "user2RandomID",
-  },
-};
 
 
 
